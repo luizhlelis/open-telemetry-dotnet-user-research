@@ -39,7 +39,8 @@ namespace Client
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(configuration.GetConnectionString("Server"));
 
-            var response = await httpClient.GetAsync(configuration["HelloEndpoint"]);
+            for (var i = 0; i < 3; i++)
+                await httpClient.GetAsync(configuration["HelloEndpoint"]);
         }
     }
 }
