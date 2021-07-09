@@ -23,3 +23,7 @@ dotnet run
 ```
 
 to run the client, type the command below inside [Client](./src/OpenTelemetryUserResearch/Client) folder:
+
+``` bash
+dotnet run
+```
