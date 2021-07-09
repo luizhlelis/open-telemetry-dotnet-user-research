@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
+using System.Diagnostics;
+using OpenTelemetry.Trace;
 namespace OpenTelemetryUserResearch.Controllers
 {
     [ApiController]
@@ -19,6 +20,12 @@ namespace OpenTelemetryUserResearch.Controllers
         public async Task<IActionResult> Get()
         {
             await Task.Delay(30);
+            using var currentActivity = Activity.Current;
+            using TelemetrySpan telemetrySpan = new TelemetrySpan(currentActivity);
+            if (currentActivity != null){
+                currentActivity.AddTag("http.route", "GET Hello");
+                telemetrySpan.UpdateName("Hello");
+            }
             return Ok("Hello World");
         }
     }
