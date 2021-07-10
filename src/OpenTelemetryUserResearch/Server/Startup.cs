@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,12 @@ namespace OpenTelemetryUserResearch
                     .AddZipkinExporter()
             );
             services.Configure<ZipkinExporterOptions>(Configuration.GetSection("Zipkin"));
+
+            var activitySource = new ActivitySource(
+                "OpenTelemetry.Instrumentation.AspNetCore",
+                "1.0.0.0");
+
+            services.AddSingleton(activitySource);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
