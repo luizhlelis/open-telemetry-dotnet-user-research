@@ -10,10 +10,12 @@ namespace OpenTelemetryUserResearch.Controllers
     public class HelloController : ControllerBase
     {
         private readonly ILogger<HelloController> _logger;
+        private readonly TracerProvider _tracerProvider;
 
-        public HelloController(ILogger<HelloController> logger)
+        public HelloController(ILogger<HelloController> logger, TracerProvider tracerProvider)
         {
             _logger = logger;
+            _tracerProvider = tracerProvider;
         }
 
         [HttpGet]
@@ -21,10 +23,11 @@ namespace OpenTelemetryUserResearch.Controllers
         {
             await Task.Delay(30);
             using var currentActivity = Activity.Current;
-            using TelemetrySpan telemetrySpan = new TelemetrySpan(currentActivity);
-            if (currentActivity != null){
-                currentActivity.AddTag("http.route", "GET Hello");
-                telemetrySpan.UpdateName("Hello");
+            if (currentActivity != null)
+            {
+                currentActivity.DisplayName = "Server Hello";
+                currentActivity.SetTag("foo", "bar");
+                currentActivity.SetTag("http.route", "GET Hello");
             }
             return Ok("Hello World");
         }
