@@ -44,18 +44,10 @@ namespace Client
 
             using var parentActivity = _activitySource.StartActivity(
                 "ClientParentActivity",
-                ActivityKind.Client,
-                "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01");
+                ActivityKind.Client);
 
             for (var i = 0; i < 5; i++)
-            {
-                using var childActivity = _activitySource.StartActivity(
-                    "ClientChildActivity",
-                    ActivityKind.Client,
-                    parentActivity.Context);
-
                 await httpClient.GetAsync(configuration["HelloEndpoint"]);
-            }
         }
     }
 }
