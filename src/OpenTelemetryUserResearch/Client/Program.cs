@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace Client
                 .Build();
         }
 
+        private static readonly ActivitySource _activitySource = new("OpenTelemetry.Instrumentation.Http", "1.0.0.0");
+
         public static async Task Main()
         {
             var configuration = BuildAppConfiguration();
@@ -39,8 +42,20 @@ namespace Client
             var httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri(configuration.GetConnectionString("Server"));
 
-            for (var i = 0; i < 3; i++)
+            using var parentActivity = _activitySource.StartActivity(
+                "ClientParentActivity",
+                ActivityKind.Client,
+                "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01");
+
+            for (var i = 0; i < 5; i++)
+            {
+                using var childActivity = _activitySource.StartActivity(
+                    "ClientChildActivity",
+                    ActivityKind.Client,
+                    parentActivity.Context);
+
                 await httpClient.GetAsync(configuration["HelloEndpoint"]);
+            }
         }
     }
 }
