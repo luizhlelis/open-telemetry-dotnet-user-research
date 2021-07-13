@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using OpenTelemetry.Trace;
 using System;
+using OpenTelemetry;
 
 namespace OpenTelemetryUserResearch.Controllers
 {
@@ -35,6 +36,9 @@ namespace OpenTelemetryUserResearch.Controllers
                 currentActivity.DisplayName = "Server Hello";
                 currentActivity.SetTag("foo", "bar");
                 currentActivity.SetTag("http.route", "GET Hello");
+
+                foreach (var item in Baggage.Current)
+                    currentActivity.SetTag(item.Key, item.Value);
 
                 using (var childActivity = _activitySource.StartActivity(
                     "ChildActivity",

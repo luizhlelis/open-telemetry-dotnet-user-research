@@ -46,6 +46,8 @@ namespace Client
                 "ClientParentActivity",
                 ActivityKind.Client);
 
+            Baggage.Current.SetBaggage("project.id", "123");
+
             for (var i = 0; i < 5; i++)
                 await httpClient.GetAsync(configuration["HelloEndpoint"]);
         }
