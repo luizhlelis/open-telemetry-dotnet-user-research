@@ -33,10 +33,14 @@ namespace Client
             var zipkinConfig = new ZipkinExporterOptions();
             configuration.GetSection("Zipkin").Bind(zipkinConfig);
 
+            var jaegerConfig = new JaegerExporterOptions();
+            configuration.GetSection("Jaeger").Bind(zipkinConfig);
+
             using var tracerProvider = Sdk.CreateTracerProviderBuilder()
                 .AddHttpClientInstrumentation()
                 .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(configuration["Zipkin:ServiceName"]))
-                .AddZipkinExporter(config => config = zipkinConfig)
+                //.AddZipkinExporter(config => config = zipkinConfig)
+                .AddJaegerExporter(config => config = jaegerConfig)
                 .Build();
 
             var httpClient = new HttpClient();

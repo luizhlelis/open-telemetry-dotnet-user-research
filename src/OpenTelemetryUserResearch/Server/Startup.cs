@@ -27,9 +27,12 @@ namespace OpenTelemetryUserResearch
                 (builder) => builder
                     .AddAspNetCoreInstrumentation()
                     .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService(Configuration["Zipkin:ServiceName"]))
-                    .AddZipkinExporter()
+                    //.AddZipkinExporter()
+                    .AddJaegerExporter()
             );
+
             services.Configure<ZipkinExporterOptions>(Configuration.GetSection("Zipkin"));
+            services.Configure<JaegerExporterOptions>(Configuration.GetSection("Jaeger"));
 
             var activitySource = new ActivitySource(
                 "OpenTelemetry.Instrumentation.AspNetCore",
