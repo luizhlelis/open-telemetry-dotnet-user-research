@@ -43,3 +43,5 @@ To run the client, type the command below inside [Client](./src/OpenTelemetryUse
 ``` bash
 dotnet run
 ```
+
+Open a browser and go to `http://localhost:16686/` to see the traces in `jaeger`.
